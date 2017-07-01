@@ -31,6 +31,7 @@ PROC_HEAD = 2
 PROC_ENTRY = 3
 
 PROCESSES = 'processes'
+PROCESS_HEADERS = 'process_headers'
 GENERAL = 'general'
 TASKS = 'tasks'
 CPU='cpu'
@@ -71,6 +72,7 @@ def parse_top(raw_txt):
             result = CPU_REGEX.match(line)
             if result:
                 data[CPU] = result.groupdict()
+                data[CPU] = {k:float(data[CPU][k]) for k in data[CPU]}
                 state = MEM1_REGEX
         elif state == MEM1_REGEX:
             # not implemented
@@ -84,6 +86,7 @@ def parse_top(raw_txt):
                 state = PROC_ENTRY
                 headers = line.split()
                 data[PROCESSES] = []
+                data[PROCESS_HEADERS] = headers
         elif state == PROC_ENTRY:
             # not implemented
             state = PROC_ENTRY

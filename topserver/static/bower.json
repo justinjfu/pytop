@@ -1,0 +1,10 @@
+{
+  "name": "react-template",
+  "version": "0.0.0",
+  "dependencies": {
+    "bootstrap": "~3.3.7"
+  },
+  "appPath": "app",
+  "moduleName": "reactTemplate"
+}
+

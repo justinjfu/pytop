@@ -7,14 +7,14 @@ TOP_CMD = 'top -n 1 -b'
 
 def call(cmd, verbose=False, dry=False):
     if dry or verbose:
-        print(cmd)
+        print('CMD:', cmd)
     if not dry:
         val = subprocess.check_output(cmd, shell=True)
     return val
 
 def call_ssh(cmd, user, hostname='localhost', identity_file='~/.ssh/id_rsa', verbose=False, dry=False):
     ssh_cmd = 'ssh {user}@{host} -i {id} \'{cmd}\''.format(user=user, host=hostname, id=identity_file, cmd=cmd)
-    return call(cmd, verbose=verbose, dry=dry)
+    return call(ssh_cmd, verbose=verbose, dry=dry)
 
 def raw_nvidia_smi():
     return call(NVIDIA_CMD)
