@@ -51,7 +51,7 @@ def clean_nvidia_data(raw_data):
     return clean_data
 
 class MachineData(object):
-    def __init__(self, hosts, ssh_user, identities, history=10, update_interval=10):
+    def __init__(self, hosts, ssh_user, identities, history=10, update_interval=60):
         self.__hosts = hosts
         self.__user = ssh_user
         self.__identities = identities

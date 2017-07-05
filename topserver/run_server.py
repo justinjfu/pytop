@@ -16,7 +16,11 @@ from .machine_data import MachineData
 
 app = Flask(__name__)
 
-MACHINE_DATA = MachineData(HOSTS, SSH_USER, [IDENTITY_FILE]*len(HOSTS))
+MACHINE_DATA = MachineData(HOSTS, SSH_USER, [IDENTITY_FILE]*len(HOSTS), update_interval=UPDATE_INTERVAL)
+
+@app.route('/')
+def hello():
+    return 'hello'
 
 
 @app.route('/api/machines')
