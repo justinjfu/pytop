@@ -50,6 +50,7 @@ def clean_nvidia_data(raw_data):
     }
     return clean_data
 
+
 class MachineData(object):
     def __init__(self, hosts, ssh_user, identities, history=10, update_interval=60):
         self.__hosts = hosts
@@ -70,17 +71,16 @@ class MachineData(object):
         idx = self.__hosts.index(machine_id)
         cur_time = time.time()
         if cur_time - self.machine_to_ts_top.get(machine_id, 0)  > self.update_interval:
-            ssh_res = clean_top_data(parse_top_ssh(user=self.__user, hostname=self.__hosts[idx], identity_file=self.__identities[idx], verbose=True))
-            self.machine_to_data_top[machine_id] = ssh_res
+            res = clean_top_data(parse_top_ssh(user=self.__user, hostname=self.__hosts[idx], identity_file=self.__identities[idx], verbose=True, timeout=10))
+            self.machine_to_data_top[machine_id] = res
             self.machine_to_ts_top[machine_id] = cur_time
         return self.machine_to_data_top.get(machine_id, {})
 
     def query_nvidia(self, machine_id):
         idx = self.__hosts.index(machine_id)
-
         cur_time = time.time()
         if cur_time - self.machine_to_ts_nv.get(machine_id, 0)  > self.update_interval:
-            res = clean_nvidia_data(parse_nvidia_ssh(user=self.__user, hostname=self.__hosts[idx], identity_file=self.__identities[idx], verbose=True))
+            res = clean_nvidia_data(parse_nvidia_ssh(user=self.__user, hostname=self.__hosts[idx], identity_file=self.__identities[idx], verbose=True, timeout=10))
             self.machine_to_data_nv[machine_id] = res
             self.machine_to_ts_nv[machine_id] = cur_time
         return self.machine_to_data_nv.get(machine_id, {})
