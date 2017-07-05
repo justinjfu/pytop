@@ -11,8 +11,8 @@ Backend server which returns monitoring data at the following endpoints:
 from flask import Flask
 import json
 
-from .config import *
-from .machine_data import MachineData
+from config import *
+from machine_data import MachineData
 
 app = Flask(__name__)
 
@@ -46,3 +46,18 @@ def monitor():
     return 'Hello'
 
 
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--port", type=int, default=5000)
+    parser.add_argument("-o", default=False, action='store_true',
+        help='Open a brower tab automatically')
+    args = parser.parse_args()
+
+    url = "http://localhost:%d"%(args.port)
+    if args.o:
+        # automatically open a new tab and show the plots
+        import webbrowser
+        webbrowser.open(url,new=2)
+
+    app.run(host='0.0.0.0', port=args.port)
