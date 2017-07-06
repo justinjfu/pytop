@@ -9,6 +9,7 @@ Backend server which returns monitoring data at the following endpoints:
     Returns formatted moving average data
 """
 from flask import Flask
+from flask import redirect, url_for
 import json
 
 from config import *
@@ -28,22 +29,24 @@ def api_machines():
     data = MACHINE_DATA.hosts
     return json.dumps(data)
 
+def sanitize_input(s):
+    return s.replace(';','')
 
 @app.route('/api/top/<string:machine_id>')
 def api_top(machine_id):
-    data = MACHINE_DATA.query_top(machine_id)
+    data = MACHINE_DATA.query_top(sanitize_input(machine_id))
     return json.dumps(data)
 
 
 @app.route('/api/nvidia/<string:machine_id>')
 def api_nvidia(machine_id):
-    data = MACHINE_DATA.query_nvidia(machine_id)
+    data = MACHINE_DATA.query_nvidia(sanitize_input(machine_id))
     return json.dumps(data)
 
 
 @app.route('/monitor')
 def monitor():
-    return 'Hello'
+    return redirect(url_for('static', filename='index.html'))
 
 
 if __name__ == "__main__":
@@ -60,4 +63,4 @@ if __name__ == "__main__":
         import webbrowser
         webbrowser.open(url,new=2)
 
-    app.run(host='0.0.0.0', port=args.port)
+    app.run(host='0.0.0.0', port=args.port, threaded=True)

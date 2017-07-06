@@ -92,7 +92,7 @@ def parse_top(raw_txt):
             state = PROC_ENTRY
             values = line.split()
             if values:
-                data[PROCESSES].append({headers[i]: values[i] for i in range(len(headers))})
+                data[PROCESSES].append({headers[i].upper(): values[i] for i in range(len(headers))})
         else:
             raise NotImplementedError()
     return data
