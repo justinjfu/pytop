@@ -18,6 +18,10 @@ def call_ssh(cmd, user, hostname='localhost', identity_file='~/.ssh/id_rsa', ver
     ssh_cmd = 'ssh {user}@{host} -i {id} \'{cmd}\''.format(user=user, host=hostname, id=identity_file, cmd=cmd)
     return call(ssh_cmd, verbose=verbose, dry=dry, timeout=timeout)
 
+def call_ssh_script(script, user, hostname='localhost', identity_file='~/.ssh/id_rsa', verbose=False, dry=False, timeout=None):
+    ssh_cmd = 'ssh {user}@{host} -i {id} \'bash -s\' < {script}'.format(user=user, host=hostname, id=identity_file, script=script)
+    return call(ssh_cmd, verbose=verbose, dry=dry, timeout=timeout)
+
 def raw_nvidia_smi():
     return call(NVIDIA_CMD)
 
