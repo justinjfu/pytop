@@ -9,6 +9,7 @@ Backend server which returns monitoring data at the following endpoints:
     Returns formatted moving average data
 """
 from flask import Flask
+from flask import redirect, url_for
 import json
 
 from config import *
@@ -43,7 +44,7 @@ def api_nvidia(machine_id):
 
 @app.route('/monitor')
 def monitor():
-    return 'Hello'
+    return redirect(url_for('static', filename='index.html'))
 
 
 if __name__ == "__main__":
