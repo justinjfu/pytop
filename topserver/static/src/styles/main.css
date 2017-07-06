@@ -16,6 +16,11 @@ body {
     overflow: scroll;
 }
 
+.machine-title{
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
 .infobar > .big_info{
     font-size: xx-large;
     color: #888888;
@@ -35,6 +40,10 @@ body {
     margin-right: 1px;
     padding: 2px;
     font-family: Verdana, Helvetica, sans-serif;
+}
+
+.machine-select-selected{
+    background-color:#eeeeee;
 }
 
 .machine-select-a:hover{

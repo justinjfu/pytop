@@ -27,6 +27,16 @@ var InfoPage = React.createClass({
                         <td>{item.temperature}</td>
                 </tr>;
             });
+
+            var gpu_proc_list = gpu_data.processes.map(function(item, idx){
+                return <tr key={idx}>
+                    <td>{item.gpu_id}</td>
+                    <td>{item.pid}</td>
+                    <td>{item.user}</td>
+                    <td>{item.used_gpu_memory}</td>
+                </tr>;
+            });
+
             gpu_display = <div>
                 <table className="table">
                     <tbody>
@@ -40,8 +50,25 @@ var InfoPage = React.createClass({
                     </tbody>
                 </table>
 
+                <h5>GPU Processes</h5>
+                <table className="table">
+                    <tbody>
+                    <tr>
+                        <th>GPU</th>
+                        <th>PID</th>
+                        <th>User</th>
+                        <th>Memory</th>
+                    </tr>
+                    {gpu_proc_list}
+                    </tbody>
+                </table>
+
                 Data Received: {gpu_data.timestamp}
             </div>;
+        }else if (gpu_data == 'timeout'){
+            gpu_display = <div>Timeout</div>;
+        }else if (gpu_data == 'error'){
+            gpu_display = <div>Server Error</div>;
         }
 
         var cpu_data = this.props.cpu_data;
@@ -50,6 +77,7 @@ var InfoPage = React.createClass({
                 return <tr key={idx}>
                     <td>{item.pid}</td>
                     <td>{item.cpu}</td>
+                    <td>{item.memory}</td>
                     <td>{item.user}</td>
                     <td>{item.cmd}</td>
                 </tr>;
@@ -64,7 +92,8 @@ var InfoPage = React.createClass({
                     <tbody>
                     <tr>
                         <th>PID</th>
-                        <th>CPU</th>
+                        <th>%CPU</th>
+                        <th>%MEM</th>
                         <th>User</th>
                         <th>Cmd</th>
                     </tr>
@@ -74,10 +103,14 @@ var InfoPage = React.createClass({
 
                 Data Received: {cpu_data.timestamp}
             </div>;
+        }else if (cpu_data == 'timeout'){
+            cpu_display = <div>Timeout</div>;
+        }else if (cpu_data == 'error'){
+            cpu_display = <div>Server Error</div>;
         }
 
         return <div className="row">
-
+            <h3 className="machine-title">{this.props.host_name}</h3>
             <div className="col-md-6">
                 <div className="panel panel-default">
                     <div className="panel-heading">
