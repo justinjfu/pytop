@@ -5,7 +5,7 @@
   "main": "src/app.jsx",
   "scripts": {
     "dev": "webpack -d --watch",
-    "build": "webpack -p",
+    "build": "webpack -p --optimize-minimize",
     "start": "node ./server.js",
     "postinstall": "webpack -p; ./node_modules/bower/bin/bower install"
   },

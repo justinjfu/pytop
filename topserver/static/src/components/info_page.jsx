@@ -65,10 +65,10 @@ var InfoPage = React.createClass({
 
                 Data Received: {gpu_data.timestamp}
             </div>;
-        }else if (gpu_data == 'timeout'){
+        }else if (gpu_data == '!timeout'){
             gpu_display = <div>Timeout</div>;
-        }else if (gpu_data == 'error'){
-            gpu_display = <div>Server Error</div>;
+        }else{
+            gpu_display = <div>Server Error: {gpu_data}</div>;
         }
 
         var cpu_data = this.props.cpu_data;
@@ -103,10 +103,10 @@ var InfoPage = React.createClass({
 
                 Data Received: {cpu_data.timestamp}
             </div>;
-        }else if (cpu_data == 'timeout'){
+        }else if (cpu_data == '!timeout'){
             cpu_display = <div>Timeout</div>;
-        }else if (cpu_data == 'error'){
-            cpu_display = <div>Server Error</div>;
+        }else{
+            cpu_display = <div>Server Error: {cpu_data}</div>;
         }
 
         return <div className="row">

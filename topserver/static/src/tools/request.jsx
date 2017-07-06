@@ -13,7 +13,7 @@ function getJSON(url, callback, timeout_callback, error_callback) {
         if (status == 200) {
             callback(xhr.response);
         }else{
-            error_callback();
+            error_callback(xhr.status);
         }
     };
     xhr.ontimeout = function (e) {

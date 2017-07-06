@@ -111,7 +111,7 @@ class MachineData(object):
             res = clean_combined_data(combined_parser_ssh(user=self.__user, hostname=self.__hosts[idx], identity_file=self.__identities[idx], verbose=True, timeout=5))
             self.machine_to_data[machine_id] = res
             self.machine_to_ts[machine_id] = cur_time
-        return self.machine_to_data.get(machine_id, {'cpu': {}, 'gpu': {}})
+        return self.machine_to_data.get(machine_id, {'cpu': 'Error', 'gpu': 'Error'})
 
     def query_top(self, machine_id):
         return self.query(machine_id)['cpu']

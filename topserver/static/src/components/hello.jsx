@@ -29,19 +29,18 @@ var Main = React.createClass({
         },
         function(){
             console.log('timeout');
-            this_.setState({'cpu_data': 'timeout'})
-        },
-            function(){
-                this_.setState({'cpu_data': 'error'})
+            this_.setState({'cpu_data': '!timeout'})
+        }, function(err_code){
+                this_.setState({'cpu_data': 'Error Code: '+err_code})
             }
         );
         getJSON('../api/nvidia/'+machine, function(gpu_data){
             this_.setState({'gpu_data': gpu_data});
         }, function(){
             console.log('timeout');
-            this_.setState({'gpu_data': 'timeout'})
-        },function(){
-            this_.setState({'cpu_data': 'error'})
+            this_.setState({'gpu_data': '!timeout'})
+        },function(err_code){
+            this_.setState({'cpu_data': 'Error Code: '+err_code})
         });
         //*/
 
