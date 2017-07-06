@@ -29,16 +29,18 @@ def api_machines():
     data = MACHINE_DATA.hosts
     return json.dumps(data)
 
+def sanitize_input(s):
+    return s.replace(';','')
 
 @app.route('/api/top/<string:machine_id>')
 def api_top(machine_id):
-    data = MACHINE_DATA.query_top(machine_id)
+    data = MACHINE_DATA.query_top(sanitize_input(machine_id))
     return json.dumps(data)
 
 
 @app.route('/api/nvidia/<string:machine_id>')
 def api_nvidia(machine_id):
-    data = MACHINE_DATA.query_nvidia(machine_id)
+    data = MACHINE_DATA.query_nvidia(sanitize_input(machine_id))
     return json.dumps(data)
 
 
@@ -61,4 +63,4 @@ if __name__ == "__main__":
         import webbrowser
         webbrowser.open(url,new=2)
 
-    app.run(host='0.0.0.0', port=args.port)
+    app.run(host='0.0.0.0', port=args.port, threaded=True)

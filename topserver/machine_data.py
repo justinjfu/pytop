@@ -108,7 +108,7 @@ class MachineData(object):
         idx = self.__hosts.index(machine_id)
         cur_time = time.time()
         if cur_time - self.machine_to_ts.get(machine_id, 0)  > self.update_interval:
-            res = clean_combined_data(combined_parser_ssh(user=self.__user, hostname=self.__hosts[idx], identity_file=self.__identities[idx], verbose=True, timeout=10))
+            res = clean_combined_data(combined_parser_ssh(user=self.__user, hostname=self.__hosts[idx], identity_file=self.__identities[idx], verbose=True, timeout=5))
             self.machine_to_data[machine_id] = res
             self.machine_to_ts[machine_id] = cur_time
         return self.machine_to_data.get(machine_id, {'cpu': {}, 'gpu': {}})
