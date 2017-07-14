@@ -27,6 +27,10 @@ PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
 9179 usera   20   0 20.295g 909792 211000 S 125.0  2.8 882:40.18 python
 11895 userb   20   0 20.295g 909740 207948 R 125.0  2.8 877:40.13 python
 9861 userb   20   0 19.534g 898832 212784 R 118.8  2.7 546:57.85 python
+BREAK
+CONTAINER ID        IMAGE                  COMMAND                  CREATED             STATUS              PORTS               NAMES
+c6aa8d92051f        my_img/my_img:0.1      "/usr/bin/tini -- ..."   5 minutes ago       Up 5 minutes                            aabe8a34-7170-41d1-9702-0f86c5557a86
+d6aa8d92051f        my_img/my_img:0.2      "/usr/bin/tini -- ..."   3 minutes ago       Up 3 minutes                            dabe8a34-7170-41d1-9702-0f86c5557a86
 """
 import csv
 import re
@@ -42,12 +46,32 @@ def combined_parser_ssh(*args, **kwargs):
     raw_txt = call_ssh_script(COMBINED_SCRIPT, *args, **kwargs)
     return combined_parser(raw_txt)
 
+def parse_docker(raw_txt):
+    headers = ['CONTAINER ID', 'IMAGE', 'COMMAND', 'CREATED', 'STATUS', 'PORTS', 'NAMES']
+    header_pos = []
+    header_line = True
+    data = []
+    for line in raw_txt.split('\n'):
+        if header_line:
+            header_line = False
+            # docker is always aligned - find char positions of headers
+            header_pos = [line.find(header) for header in headers]
+        else:
+            # parse
+            idxs = header_pos+[len(line)]
+            line_data = [line[idxs[i]:idxs[i+1]].strip() for i in range(len(header_pos))]
+            data.append({headers[i].lower():line_data[i] for i in range(len(headers))})
+    return headers, data
+
 def combined_parser(raw_txt):
     breaks = raw_txt.split('\nBREAK\n')
-    gpu_proc_header, gpu_proc_data = parse_csv(breaks[0].strip())
-    gpu_info_header, gpu_info_data = parse_csv(breaks[1].strip())
+    gpu_proc_header, gpu_proc_data = parse_csv(breaks[0].strip(), divider=',')
+    gpu_info_header, gpu_info_data = parse_csv(breaks[1].strip(), divider=',')
     top_data = parse_top(breaks[2].strip())
+    docker_headers, docker_data = parse_docker(breaks[3].strip())
 
+
+    # Match up GPU processes with CPU
     pid_to_user = {proc['PID'] : proc['USER'] for proc in top_data['processes']}
 
     gpu_proc_data2 = []
@@ -59,19 +83,24 @@ def combined_parser(raw_txt):
     data = {
         'gpu': {'processes': list(gpu_proc_data), 'info': list(gpu_info_data)},
         'cpu': top_data,
+        'docker': docker_data
     }
     return data
 
-def parse_csv(raw_txt):
-    reader = csv.reader(raw_txt.split('\n'))
-    header = next(reader)
-    for i, heading in enumerate(header):
-        header[i] = re.sub('\[.*\]','',heading).strip()
-    rows = []
-    def gen():
-        for row in reader:
-            yield {header[i]:row[i].strip() for i in range(len(header))}
-    return header, gen()
+
+def parse_csv(raw_txt, divider=','):
+    try:
+        reader = csv.reader(raw_txt.split('\n'), delimiter=divider)
+        header = next(reader)
+        for i, heading in enumerate(header):
+            header[i] = re.sub('\[.*\]','',heading).strip()
+        rows = []
+        def gen():
+            for row in reader:
+                yield {header[i]:row[i].strip() for i in range(len(header))}
+        return header, gen()
+    except:
+        return [], []
 
 
 

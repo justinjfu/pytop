@@ -87,6 +87,7 @@ def clean_combined_data(raw_data):
     clean_data = {
         'cpu': clean_cpu,
         'gpu': clean_gpu,
+        'docker': raw_data['docker']
     }
     return clean_data
 
@@ -118,6 +119,9 @@ class MachineData(object):
 
     def query_nvidia(self, machine_id):
         return self.query(machine_id)['gpu']
+
+    def query_docker(self, machine_id):
+        return self.query(machine_id)['docker']
 
 
 class MachineDataOld(object):

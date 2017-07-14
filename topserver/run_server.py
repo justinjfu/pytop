@@ -44,6 +44,12 @@ def api_nvidia(machine_id):
     return json.dumps(data)
 
 
+@app.route('/api/docker/<string:machine_id>')
+def api_docker(machine_id):
+    data = MACHINE_DATA.query_docker(sanitize_input(machine_id))
+    return json.dumps(data)
+
+
 @app.route('/monitor')
 def monitor():
     return redirect(url_for('static', filename='index.html'))
