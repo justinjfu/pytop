@@ -6,7 +6,7 @@ from datetime import datetime
 
 def clean_top_data(raw_data):
     procs = raw_data['processes']
-    procs = filter(lambda x: x['USER'] != 'root', procs)
+    #procs = filter(lambda x: x['USER'] != 'root', procs)
     procs_sorted = sorted(procs, key=lambda x: -float(x['%CPU']))
 
     top_procs = []
@@ -61,7 +61,7 @@ def clean_combined_data(raw_data):
 
     gpu_data_list = []
     for gpu_info in raw_data['gpu']['info']:
-        gpu_id = int(gpu_info['pci.bus_id'].split(':')[1])
+        gpu_id = int(gpu_info['pci.bus_id'].split(':')[1], 16)
         usage = float(gpu_info['utilization.gpu'][:-1].strip())/100.
         gpu_data = {
             'name': 'GPU %.2d' % gpu_id,
@@ -74,7 +74,7 @@ def clean_combined_data(raw_data):
         gpu_data_list.append(gpu_data)
 
     for gpu_proc in raw_data['gpu']['processes']:
-        gpu_id = int(gpu_proc['gpu_bus_id'].split(':')[1])
+        gpu_id = int(gpu_proc['gpu_bus_id'].split(':')[1], 16)
         gpu_proc['gpu_id'] = gpu_id
         del gpu_proc['gpu_bus_id']
 
